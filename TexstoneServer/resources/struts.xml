@@ -1,0 +1,165 @@
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.multipart.maxSize" value="10000000" />
+	
+
+    <package name="default" extends="hibernate-default" namespace="/">
+
+ 		<interceptors>
+	 		<interceptor-stack name="appDefault">
+				<interceptor-ref name="hibernateSessionInterceptor"/>
+	 			 <interceptor-ref name="defaultStack">
+	      			<param name="exception.logEnabled">true</param>
+	      			<param name="exception.logLevel">ERROR</param>
+	      		 </interceptor-ref>
+	 	    </interceptor-stack>
+		</interceptors>
+		
+        <default-interceptor-ref name="appDefault"/>
+    
+		<action name="loginpage">
+			<result>/login.jsp</result>
+		</action>
+    
+        <action name="login" class="com.jpn.gemstone.texstone.server.web.LoginAction">
+            <result name="input">/login.jsp</result>
+            <result name="error">/login.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">home</param>
+         		<param name="namespace">/admin</param>
+			</result>
+
+            
+            
+        </action>
+        
+        <action name="logout" class="com.jpn.gemstone.texstone.server.web.LoginAction" method="logout">
+            <result name="success" type="redirectAction">loginpage</result>
+        </action>
+
+        
+    </package>
+
+
+
+
+
+
+	<package name="device" extends="hibernate-default" namespace="/device">
+ 		<interceptors>
+	 		<interceptor-stack name="appDefault">
+	 			 <interceptor-ref name="defaultStackHibernate">
+	      			<param name="exception.logEnabled">true</param>
+	      			<param name="exception.logLevel">ERROR</param>
+	      		 </interceptor-ref>
+	 	    </interceptor-stack>
+		</interceptors>
+		
+        <default-interceptor-ref name="appDefault"/>
+        
+		<action name="getUpdateData" method="getUpdateData" class="com.jpn.gemstone.texstone.server.web.DeviceAction">
+			 <result name="success" type="stream">
+			   <param name="contentType">application/json</param>
+			   <param name="inputName">streamData</param>
+			   <param name="bufferSize">1024</param>
+			 </result>
+		</action>
+	</package>
+
+
+
+
+
+
+
+
+
+	<package name="admin" extends="hibernate-default" namespace="/admin">
+	
+ 		<interceptors>
+             
+            <interceptor name="loginInterceptor" class="com.jpn.gemstone.texstone.server.interceptor.LoginInterceptor" />
+	 		 
+	 		<interceptor-stack name="appDefault">
+	 			<interceptor-ref name="loginInterceptor"/>
+				<interceptor-ref name="hibernateSessionInterceptor"/>
+	 			 <interceptor-ref name="defaultStack">
+	      			<param name="exception.logEnabled">true</param>
+	      			<param name="exception.logLevel">ERROR</param>
+					<param name="fileUpload.maximumSize">102400000</param>
+	      		 </interceptor-ref>
+	 	    </interceptor-stack>
+		</interceptors>
+		
+        <default-interceptor-ref name="appDefault"/>
+
+		<global-results>
+			<result name="error">/error.jsp</result>
+			<result name="loginpage" type="redirectAction">
+				<param name="actionName">loginpage</param>
+         		<param name="namespace">/</param>
+			</result>
+		</global-results>
+
+
+		<global-exception-mappings>
+			 <exception-mapping exception="java.lang.Exception" result="error" />
+	   	</global-exception-mappings>
+	   	
+        <action name="home" class="com.jpn.gemstone.texstone.server.web.HomeAction">
+            <result name="success">home.jsp</result>
+        </action>
+
+
+		<action name="saveOrUpdateCategory" method="saveOrUpdate" class="com.jpn.gemstone.texstone.server.web.CategoryAction">
+			<result name="success" type="redirect">listCategory</result>
+			<result name="input">category.jsp</result>
+			<result name="error">category.jsp</result>
+		</action>
+		<action name="listCategory" method="list" class="com.jpn.gemstone.texstone.server.web.CategoryAction">
+			<result name="success">category.jsp</result>
+		</action>
+		<action name="editCategory" method="edit" class="com.jpn.gemstone.texstone.server.web.CategoryAction">
+			<result name="success">category.jsp</result>
+		</action>
+		<action name="deleteCategory" method="delete" class="com.jpn.gemstone.texstone.server.web.CategoryAction">
+			<result name="success" type="redirect">listCategory</result>
+		</action>
+
+
+		<action name="saveOrUpdateArticle" method="saveOrUpdate" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success" type="redirect">listArticle</result>
+			<result name="input">article.jsp</result>
+			<result name="error">article.jsp</result>
+		</action>
+		<action name="uploadArticleExcel" method="uploadExcel" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success">article_batch.jsp</result>
+		</action>
+		<action name="saveBatchArticleList" method="saveBatchArticleList" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success" type="redirect">listArticle</result>
+		</action>
+		<action name="listArticle" method="list" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success">article.jsp</result>
+		</action>
+		<action name="editArticle" method="edit" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success">article.jsp</result>
+		</action>
+		<action name="deleteArticle" method="delete" class="com.jpn.gemstone.texstone.server.web.ArticleAction">
+			<result name="success" type="redirect">listArticle</result>
+		</action>
+		
+		<action name="checkVersion" method="checkVersion" class="com.jpn.gemstone.texstone.server.web.VersionAction">
+			<result name="success">version_publish.jsp</result>
+		</action>
+		<action name="publishVersion" method="publishVersion" class="com.jpn.gemstone.texstone.server.web.VersionAction">
+			<result name="success">version_publish.jsp</result>
+		</action>
+
+
+		
+	</package>
+</struts>
