@@ -115,8 +115,8 @@ public class ExcelReader {
 			String titleFurigana = getStringCellValue(titleFuriganaCell);
 			String body = getStringCellValue(bodyCell);
 			
-			if(StringUtils.isNotEmpty(categoryNameInputText) || 
-				StringUtils.isNotEmpty(title) || 
+			if(StringUtils.isNotEmpty(categoryNameInputText) && 
+				StringUtils.isNotEmpty(title) && 
 					StringUtils.isNotEmpty(body)){
 						article = new Article();
 						article.setCategoryId(getNumericCellValue(categoryCell));
